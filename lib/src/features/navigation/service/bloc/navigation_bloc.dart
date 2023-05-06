@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:surf_logger/surf_logger.dart';
 
 part 'navigation_event.dart';
 
