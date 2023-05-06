@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/src/features/articles/screens/articles.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/src/features/app/pages/home_screen.dart';
+import 'package:news_app/src/features/navigation/service/bloc/navigation_bloc.dart';
 
 class NewsApplication extends StatelessWidget {
   const NewsApplication({Key? key}) : super(key: key);
@@ -12,7 +14,11 @@ class NewsApplication extends StatelessWidget {
         primarySwatch: Colors.indigo,
         useMaterial3: true,
       ),
-      home: const ArticlesScreen(),
+      home: BlocBuilder<NavigationBloc, NavigationState>(
+        builder: (context, state) {
+          return const HomeScreen();
+        },
+      ),
     );
   }
 }
