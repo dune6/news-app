@@ -59,6 +59,10 @@ ThemeData themeNewsApp = ThemeData(
           color: NewsColors.greyPrimary,
           fontSize: 12,
           fontWeight: FontWeight.w600),
+      titleSmall: TextStyle(
+          color: NewsColors.white,
+          fontSize: 12,
+          fontWeight: FontWeight.w600),
       labelMedium: TextStyle(
           color: NewsColors.greyPrimary,
           fontSize: 16,

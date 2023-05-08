@@ -16,12 +16,16 @@ dependencies:
   surf_logger: ^1.1.0
   flutter_bloc: ^8.1.2
   freezed_annotation: any
-  dio: any
+  dio: ^5.1.1
   flutter:
     sdk: flutter
 
+  http: any
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.5
+  group_button: ^5.2.2
+  equatable: ^2.0.5
+  stream_transform: ^2.1.0
 
 
 
@@ -43,7 +47,8 @@ flutter:
   assets:
     - assets/icons/navigation/selected/
     - assets/icons/navigation/unselected/
-    - assets/images/
+    - assets/icons/home/
+    - assets/images/comp.jpg
 
   fonts:
     - family: SF Pro

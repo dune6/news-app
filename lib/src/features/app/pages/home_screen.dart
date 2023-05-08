@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:news_app/src/features/app/di/app_di_container.dart';
+import 'package:news_app/src/features/app/util/icons.dart';
 import 'package:news_app/src/features/articles/screens/articles.dart';
+import 'package:news_app/src/features/articles/service/articles_bloc/articles_bloc.dart';
 import 'package:news_app/src/features/navigation/service/bloc/navigation_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,7 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (context, state) {
             switch (state.runtimeType) {
               case NavigationArticlesState:
-                return const ArticlesScreen();
+                return BlocProvider(
+                  create: (context) => ArticlesBloc(
+                      articlesRepository:
+                          AppDiContainer().getArticlesRepository()),
+                  child: const ArticlesScreen(),
+                );
               case NavigationCategoriesState:
                 return Center(
                   child: Text(state.runtimeType.toString()),
@@ -65,31 +72,23 @@ class _HomeScreenState extends State<HomeScreen> {
               child: BottomNavigationBar(
                 items: <BottomNavigationBarItem>[
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                        'assets/icons/navigation/unselected/navigation_articles.svg'),
-                    activeIcon: SvgPicture.asset(
-                        'assets/icons/navigation/selected/navigation_articles.svg'),
+                    icon: NewsIcons.articlesUnselected,
+                    activeIcon: NewsIcons.articlesSelected,
                     label: 'Articles',
                   ),
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                        'assets/icons/navigation/unselected/navigation_categories.svg'),
-                    activeIcon: SvgPicture.asset(
-                        'assets/icons/navigation/selected/navigation_categories.svg'),
+                    icon: NewsIcons.categoriesUnselected,
+                    activeIcon: NewsIcons.categoriesSelected,
                     label: 'Categories',
                   ),
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                        'assets/icons/navigation/unselected/navigation_favourites.svg'),
-                    activeIcon: SvgPicture.asset(
-                        'assets/icons/navigation/selected/navigation_favourites.svg'),
+                    icon: NewsIcons.favouritesUnselected,
+                    activeIcon: NewsIcons.favouritesSelected,
                     label: 'Favourites',
                   ),
                   BottomNavigationBarItem(
-                    icon: SvgPicture.asset(
-                        'assets/icons/navigation/unselected/navigation_user.svg'),
-                    activeIcon: SvgPicture.asset(
-                        'assets/icons/navigation/selected/navigation_user.svg'),
+                    icon: NewsIcons.userUnselected,
+                    activeIcon: NewsIcons.userSelected,
                     label: 'User',
                   ),
                 ],

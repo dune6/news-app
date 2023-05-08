@@ -1,4 +1,12 @@
 part of 'articles_bloc.dart';
 
-@immutable
-abstract class ArticlesEvent {}
+abstract class ArticlesEvent extends Equatable {
+  @override
+  List<Object> get props => [];
+}
+
+class ArticlesFetched extends ArticlesEvent {
+  final Section section;
+
+  ArticlesFetched({required this.section});
+}

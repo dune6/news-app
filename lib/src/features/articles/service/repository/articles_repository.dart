@@ -16,9 +16,10 @@ class ArticlesRepository implements IArticlesRepository {
   @override
   Future<List<Article>> getArticles(Section section) async {
     try {
+      // test transformation
       return await apiService.getTList(section.section).then(
-          (Map<String, dynamic> list) =>
-              list.values.map((e) => Article.fromJson(e)).toList());
+          (List<Map<String, dynamic>> list) =>
+              list.map((e) => Article.fromJson(e)).toList());
     } catch (e) {
       Logger.e(e.toString());
       rethrow;

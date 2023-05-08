@@ -2,30 +2,38 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 
 class HttpHelper {
+  static final dio = Dio(BaseOptions(
+    responseType: ResponseType.json,
+    receiveTimeout: const Duration(seconds: 60),
+    connectTimeout: const Duration(seconds: 60),
+    receiveDataWhenStatusError: true,
+    contentType: 'application/json',
+    baseUrl: 'https://api.nytimes.com',
+  ));
+
   static Future<dynamic> get(String url,
-      {Map<String, String>? headers,
-      Map<String, dynamic>? queryParams,
-      int timeout = 10}) async {
-    debugPrint('HTTP GET $url, params : $queryParams, headers : $headers');
-    Response response = await Dio().get(
+      {Map<String, String>? headers, Map<String, dynamic>? queryParams}) async {
+    debugPrint('HTTPS GET $url, params : $queryParams, headers : $headers');
+    Response response = await dio.get(
       url,
       options: Options(
         headers: headers,
       ),
       queryParameters: queryParams,
     );
-    debugPrint('HTTP GET response (${response.statusCode}) : $response');
+    debugPrint('HTTPS GET response (${response.statusCode}) : $response');
     return response;
   }
 
-  static Future<dynamic> post(String url,
-      {Map<String, String>? headers,
-      dynamic data,
-      Map<String, String>? queryParams,
-      int timeout = 10}) async {
+  static Future<dynamic> post(
+    String url, {
+    Map<String, String>? headers,
+    dynamic data,
+    Map<String, String>? queryParams,
+  }) async {
     debugPrint(
-        'HTTP POST $url, params : $queryParams, data : $data, headers : $headers');
-    Response response = await Dio().post(
+        'HTTPS POST $url, params : $queryParams, data : $data, headers : $headers');
+    Response response = await dio.post(
       url,
       data: data,
       options: Options(
@@ -33,20 +41,21 @@ class HttpHelper {
       ),
       queryParameters: queryParams,
     );
-    debugPrint('HTTP POST response (${response.statusCode}) : $response');
+    debugPrint('HTTPS POST response (${response.statusCode}) : $response');
     return response;
   }
 
-  static Future<dynamic> put(String url,
-      {Map<String, String>? headers,
-      Map<String, dynamic>? data,
-      Map<String, String>? queryParams,
-      int timeout = 10}) async {
+  static Future<dynamic> put(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? data,
+    Map<String, String>? queryParams,
+  }) async {
     debugPrint(
-        'HTTP PUT $url, params : $queryParams, data : $data, headers : $headers');
+        'HTTPS PUT $url, params : $queryParams, data : $data, headers : $headers');
     Response response;
     try {
-      response = await Dio().put(
+      response = await dio.put(
         url,
         data: data,
         options: Options(
@@ -56,7 +65,7 @@ class HttpHelper {
       );
     } on DioError catch (e) {
       debugPrint(
-          'HTTP PUT error ${e.response?.statusCode} : ${e.response?.data}');
+          'HTTPS PUT error ${e.response?.statusCode} : ${e.response?.data}');
       rethrow;
     } catch (e) {
       rethrow;
@@ -65,19 +74,20 @@ class HttpHelper {
     return response;
   }
 
-  static Future<dynamic> delete(String url,
-      {Map<String, String>? headers,
-      Map<String, dynamic>? queryParams,
-      int timeout = 10}) async {
-    debugPrint('HTTP DELETE $url, params : $queryParams, headers : $headers');
-    Response response = await Dio().delete(
+  static Future<dynamic> delete(
+    String url, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? queryParams,
+  }) async {
+    debugPrint('HTTPS DELETE $url, params : $queryParams, headers : $headers');
+    Response response = await dio.delete(
       url,
       options: Options(
         headers: headers,
       ),
       queryParameters: queryParams,
     );
-    debugPrint('HTTP DELETE response (${response.statusCode}) : $response');
+    debugPrint('HTTPS DELETE response (${response.statusCode}) : $response');
     return response;
   }
 }
