@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/src/features/app/pages/home_screen.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
+import 'package:news_app/src/features/articles/screens/aricle_info.dart';
 import 'package:news_app/src/features/navigation/service/bloc/navigation_bloc.dart';
 
 class NewsApplication extends StatelessWidget {
@@ -12,11 +13,14 @@ class NewsApplication extends StatelessWidget {
     return MaterialApp(
       title: 'ilya.voznesensky/news-app',
       theme: themeNewsApp,
-      home: BlocBuilder<NavigationBloc, NavigationState>(
-        builder: (context, state) {
-          return const HomeScreen();
-        },
-      ),
+      routes: {
+        '/': (context) => BlocBuilder<NavigationBloc, NavigationState>(
+              builder: (context, state) {
+                return const HomeScreen();
+              },
+            ),
+      },
+      initialRoute: '/',
     );
   }
 }
@@ -52,6 +56,10 @@ ThemeData themeNewsApp = ThemeData(
           fontSize: 16,
           fontWeight: FontWeight.w400),
       titleLarge: TextStyle(
+          color: NewsColors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w700),
+      titleMedium: TextStyle(
           color: NewsColors.blackPrimary,
           fontSize: 16,
           fontWeight: FontWeight.w600),
@@ -60,9 +68,7 @@ ThemeData themeNewsApp = ThemeData(
           fontSize: 12,
           fontWeight: FontWeight.w600),
       titleSmall: TextStyle(
-          color: NewsColors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.w600),
+          color: NewsColors.white, fontSize: 12, fontWeight: FontWeight.w600),
       labelMedium: TextStyle(
           color: NewsColors.greyPrimary,
           fontSize: 16,

@@ -48,7 +48,7 @@ flutter:
     - assets/icons/navigation/selected/
     - assets/icons/navigation/unselected/
     - assets/icons/home/
-    - assets/images/comp.jpg
+    - assets/images/placeholder.png
 
   fonts:
     - family: SF Pro

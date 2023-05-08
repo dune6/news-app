@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:news_app/src/features/app/util/icons.dart';
+import 'package:news_app/src/features/articles/domain/article.dart';
+import 'package:news_app/src/features/articles/screens/aricle_info.dart';
 
 class ArticleListItem extends StatelessWidget {
-  final String imageLink;
-  final String title;
+  final Article article;
 
-  const ArticleListItem(
-      {Key? key, required this.imageLink, required this.title})
-      : super(key: key);
+  const ArticleListItem({Key? key, required this.article}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +18,12 @@ class ArticleListItem extends StatelessWidget {
           SizedBox(
             height: 272,
             width: MediaQuery.of(context).size.width,
-            child: Image.asset(
+            child: FadeInImage.assetNetwork(
+              placeholder: 'assets/images/placeholder.png',
+              fadeInDuration: Duration(seconds: 1),
               fit: BoxFit.fitWidth,
               alignment: Alignment.topCenter,
-              imageLink,
+              image: article.multimedia[1].url,
             ),
           ),
           Container(
@@ -38,15 +38,29 @@ class ArticleListItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'A Simple Trick For Creating Color Palettes Quickly',
+                        article.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                     IconButton(
                         onPressed: () {}, icon: NewsIcons.favouritesUnselected)
                   ]),
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ArticleInfoScreen(
+                    article: article,
+                  ),
+                ),
+              ),
             ),
           )
         ],

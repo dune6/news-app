@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:news_app/src/features/articles/domain/article.dart';
 
 import 'article_list_item.dart';
@@ -11,23 +10,20 @@ class ArticleListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollable(
-      viewportBuilder: (BuildContext context, ViewportOffset position) {
-        return ListView.builder(
-          itemCount: articles.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          semanticChildCount: 5,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: ArticleListItem(
-                title: articles[index].title,
-                // imageLink: articles[index].multimedia.first.url,
-                imageLink: 'assets/images/comp.jpg',
-              ),
-            );
-          },
+    return ListView.builder(
+      physics: const ScrollPhysics(),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: articles.length,
+      itemExtent: 296,
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      semanticChildCount: 5,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 24),
+          child: ArticleListItem(
+            article: articles[index],
+          ),
         );
       },
     );

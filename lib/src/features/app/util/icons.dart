@@ -23,4 +23,5 @@ abstract class NewsIcons {
   static SvgPicture search = SvgPicture.asset('assets/icons/home/search.svg');
   static SvgPicture microphone =
       SvgPicture.asset('assets/icons/home/microphone.svg');
+  static SvgPicture share = SvgPicture.asset('assets/icons/home/share.svg');
 }

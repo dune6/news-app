@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:news_app/src/features/articles/domain/article.dart';
 
 part 'navigation_event.dart';
 
