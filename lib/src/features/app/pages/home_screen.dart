@@ -15,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static int _selectedIndex = 0;
+  static AppDiContainer diContainer = AppDiContainer();
 
   @override
   void initState() {
@@ -31,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
               case NavigationArticlesState:
                 return BlocProvider(
                   create: (context) => ArticlesBloc(
-                      articlesRepository:
-                          AppDiContainer().getArticlesRepository()),
+                      articlesRepository: diContainer.getArticlesRepository(),
+                      preferencesProvider: diContainer.getLocalStorageRepository()),
                   child: const ArticlesScreen(),
                 );
               case NavigationCategoriesState:

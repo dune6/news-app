@@ -20,7 +20,7 @@ class ArticleListItem extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             child: FadeInImage.assetNetwork(
               placeholder: 'assets/images/placeholder.png',
-              fadeInDuration: Duration(seconds: 1),
+              fadeInDuration: const Duration(seconds: 1),
               fit: BoxFit.fitWidth,
               alignment: Alignment.topCenter,
               image: article.multimedia[1].url,
@@ -52,16 +52,17 @@ class ArticleListItem extends StatelessWidget {
           Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(16)),
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ArticleInfoScreen(
-                    article: article,
-                  ),
-                ),
-              ),
-            ),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                onTap: () => Future.delayed(Duration.zero, () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ArticleInfoScreen(
+                            article: article,
+                          ),
+                        ),
+                      );
+                    })),
           )
         ],
       ),

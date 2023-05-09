@@ -12,12 +12,12 @@ class ArticleListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const ScrollPhysics(),
+      addAutomaticKeepAlives: true,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: articles.length,
       itemExtent: 296,
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      semanticChildCount: 5,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 24),

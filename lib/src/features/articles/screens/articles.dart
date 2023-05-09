@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:group_button/group_button.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
 import 'package:news_app/src/features/app/util/icons.dart';
-import 'package:news_app/src/features/articles/domain/article.dart';
 import 'package:news_app/src/features/articles/service/articles_bloc/articles_bloc.dart';
 import 'package:news_app/src/features/articles/service/repository/articles_repository.dart';
 import 'package:news_app/src/features/articles/widgets/article_list.dart';
+import 'package:surf_logger/surf_logger.dart';
 
 class ArticlesScreen extends StatefulWidget {
   const ArticlesScreen({Key? key}) : super(key: key);
@@ -18,13 +18,16 @@ class ArticlesScreen extends StatefulWidget {
 class _ArticlesScreenState extends State<ArticlesScreen> {
   final GroupButtonController _groupButtonController =
       GroupButtonController(selectedIndex: 0);
-  final List<Article> articles = [];
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    context.read<ArticlesBloc>().add(ArticlesFetched(section: Section.sports));
-
+    _textEditingController.addListener(_filterArticles);
+    _groupButtonController.addListener(_changedSection);
+    if (context.read<ArticlesBloc>().articles.isEmpty) {
+      context.read<ArticlesBloc>().add(ArticlesFetched(section: Section.home));
+    }
   }
 
   @override
@@ -34,6 +37,11 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
         const SizedBox(
           height: 72,
         ),
+        ElevatedButton(
+            onPressed: () {
+              context.read<ArticlesBloc>().add(ArticlesLoadLocally());
+            },
+            child: const Text('load locally data')),
         Column(
           children: [
             Padding(
@@ -56,6 +64,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                     height: 32,
                   ),
                   TextFormField(
+                    controller: _textEditingController,
                     style: Theme.of(context).textTheme.labelMedium,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -88,6 +97,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
               padding: const EdgeInsetsDirectional.only(start: 20, end: 19),
               child: GroupButton(
                 isRadio: true,
+                // onSelected: _changedSection,
                 options: GroupButtonOptions(
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                   buttonHeight: 32,
@@ -101,13 +111,13 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                 ),
                 controller: _groupButtonController,
                 enableDeselect: false,
-                buttons: const [
-                  'Random',
-                  'Sports',
-                  'Art',
-                  'Gaming',
-                  'Fashion',
-                  'Nature'
+                buttons: [
+                  Section.home.section,
+                  Section.sports.section,
+                  Section.arts.section,
+                  Section.business.section,
+                  Section.fashion.section,
+                  Section.food.section,
                 ],
               ),
             ),
@@ -116,19 +126,19 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
             ),
             Padding(
                 padding: const EdgeInsets.only(left: 20, right: 19),
-                child: BlocConsumer<ArticlesBloc, ArticlesState>(
-                  listener: (context, state) {},
+                child: BlocBuilder<ArticlesBloc, ArticlesState>(
                   builder: (context, state) {
-                    if (state.status == ArticlesStatus.initial) {
-                      return const CircularProgressIndicator();
-                    } else {
-                      if (state.articles.isEmpty) {
-                        return const Text('Empty articles list');
-                      } else {
-                        return ArticleListWidget(
-                          articles: state.articles,
-                        );
-                      }
+                    switch (state.status) {
+                      case ArticlesStatus.initial:
+                        return const CircularProgressIndicator();
+                      case ArticlesStatus.failure:
+                        return const Text('Error!');
+                      case ArticlesStatus.success:
+                        return state.articles.isEmpty
+                            ? const Text('No data')
+                            : ArticleListWidget(
+                                articles: state.articles,
+                              );
                     }
                   },
                 )),
@@ -136,5 +146,50 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
         )
       ],
     );
+  }
+
+  // filter articles by text input
+  void _filterArticles() {
+    context
+        .read<ArticlesBloc>()
+        .add(FilterArticles(filter: _textEditingController.text));
+  }
+
+  void _changedSection() {
+    _textEditingController.text = '';
+    final index = _groupButtonController.selectedIndexes.last;
+    Logger.d('Index pressed: $index');
+    switch (index) {
+      case 0:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.home));
+        break;
+      case 1:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.sports));
+        break;
+      case 2:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.arts));
+        break;
+      case 3:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.business));
+        break;
+      case 4:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.fashion));
+        break;
+      case 5:
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(section: Section.food));
+        break;
+    }
   }
 }
