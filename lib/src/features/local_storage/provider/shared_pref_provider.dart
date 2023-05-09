@@ -26,8 +26,8 @@ class SharedPreferencesProvider implements ISharedPreferencesProvider {
         List<Article>? downloaded = await getArticles();
         if (downloaded != null) {
           if (downloaded.length + articles.length <= 40) {
-            articlesToSave.addAll(downloaded);
-            articlesToSave.addAll(articles);
+            articlesToSave.addAll(articles.reversed);
+            articlesToSave.addAll(downloaded.reversed);
           } else {
             // saved = 39
             // loaded = 39
@@ -35,15 +35,17 @@ class SharedPreferencesProvider implements ISharedPreferencesProvider {
             // savedResult = saved.sublist(saved - need)
             // result = savedResult.addAll(savedResult);
             // result = savedResult.addAll(loaded);
-            articlesToSave.addAll(
-                downloaded.sublist(downloaded.length - (40 - articles.length)));
-            articlesToSave.addAll(articles);
+            articlesToSave.addAll(articles.reversed);
+            articlesToSave.addAll(downloaded
+                .sublist(downloaded.length - (40 - articles.length))
+                .reversed);
           }
         } else {
           if (articles.length >= 40) {
-            articlesToSave.addAll(articles.sublist(articles.length - 40));
+            articlesToSave
+                .addAll(articles.sublist(articles.length - 40).reversed);
           } else {
-            articlesToSave.addAll(articles);
+            articlesToSave.addAll(articles.reversed);
           }
         }
       }
@@ -69,8 +71,6 @@ class SharedPreferencesProvider implements ISharedPreferencesProvider {
       } else {
         return (jsonDecode(data) as List<dynamic>)
             .map((e) => Article.fromJson(e))
-            .toList()
-            .reversed
             .toList();
       }
     } catch (e) {
