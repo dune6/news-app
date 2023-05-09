@@ -22,6 +22,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
 
   @override
   void initState() {
+    // todo check internet connection
     super.initState();
     _textEditingController.addListener(_filterArticles);
     _groupButtonController.addListener(_changedSection);
@@ -33,12 +34,14 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
         const SizedBox(
           height: 72,
         ),
         ElevatedButton(
             onPressed: () {
+              // todo delete this button
               context.read<ArticlesBloc>().add(ArticlesLoadLocally());
             },
             child: const Text('load locally data')),
@@ -112,6 +115,7 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                 controller: _groupButtonController,
                 enableDeselect: false,
                 buttons: [
+                  // todo send to bloc
                   Section.home.section,
                   Section.sports.section,
                   Section.arts.section,

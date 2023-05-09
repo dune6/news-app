@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
-import 'package:news_app/src/features/app/util/icons.dart';
 import 'package:news_app/src/features/articles/domain/article.dart';
 
 class ArticleInfoScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _ArticleInfoScreenState extends State<ArticleInfoScreen> {
                 statusBarColor: Colors.transparent,
               ),
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.share)),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
                 IconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.bookmark_border_outlined)),
@@ -44,25 +44,33 @@ class _ArticleInfoScreenState extends State<ArticleInfoScreen> {
               floating: false,
               iconTheme: const IconThemeData(color: NewsColors.blackDarker),
               flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  widget.article.title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge
-                      ?.copyWith(shadows: [
-                    Shadow(color: Colors.black.withOpacity(1), blurRadius: 10),
-                  ]),
-                ),
-                titlePadding:
-                    const EdgeInsets.only(left: 20, right: 19, bottom: 40),
-                background: FadeInImage.assetNetwork(
-                  placeholder: 'assets/images/placeholder.png',
-                  fadeInDuration: const Duration(seconds: 1),
-                  fit: BoxFit.fitHeight,
-                  alignment: Alignment.topCenter,
-                  image: widget.article.multimedia.first.url,
-                ),
-              ),
+                  title: Text(
+                    widget.article.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(shadows: [
+                      Shadow(
+                          color: Colors.black.withOpacity(1), blurRadius: 10),
+                    ]),
+                  ),
+                  titlePadding:
+                      const EdgeInsets.only(left: 20, right: 19, bottom: 40),
+                  background: CachedNetworkImage(
+                    placeholder: (context, url) => Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.fitHeight),
+                    errorWidget: (context, url, error) {
+                      return Image.asset('assets/images/placeholder.png',
+                          fit: BoxFit.fitHeight);
+                    },
+                    fadeInDuration: const Duration(seconds: 1),
+                    placeholderFadeInDuration: const Duration(seconds: 1),
+                    fadeInCurve: Curves.easeOutExpo,
+                    fit: BoxFit.fitHeight,
+                    alignment: Alignment.topCenter,
+                    imageUrl: widget.article.multimedia.first.url,
+                  )),
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(24),
                 child: Container(
@@ -102,7 +110,7 @@ class _ArticleInfoScreenState extends State<ArticleInfoScreen> {
                             widget.article.section,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
@@ -112,7 +120,7 @@ class _ArticleInfoScreenState extends State<ArticleInfoScreen> {
                                 .bodySmall
                                 ?.copyWith(color: NewsColors.greyDarker),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(
@@ -122,7 +130,7 @@ class _ArticleInfoScreenState extends State<ArticleInfoScreen> {
                                 .bodySmall
                                 ?.copyWith(color: NewsColors.greyDarker),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
                           Text(

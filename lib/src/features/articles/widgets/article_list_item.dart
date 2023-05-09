@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:news_app/src/features/app/util/icons.dart';
 import 'package:news_app/src/features/articles/domain/article.dart';
 import 'package:news_app/src/features/articles/screens/aricle_info.dart';
+import 'package:surf_logger/surf_logger.dart';
 
 class ArticleListItem extends StatelessWidget {
   final Article article;
@@ -15,15 +17,37 @@ class ArticleListItem extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
-          SizedBox(
-            height: 272,
-            width: MediaQuery.of(context).size.width,
-            child: FadeInImage.assetNetwork(
-              placeholder: 'assets/images/placeholder.png',
-              fadeInDuration: const Duration(seconds: 1),
-              fit: BoxFit.fitWidth,
-              alignment: Alignment.topCenter,
-              image: article.multimedia[1].url,
+          Material(
+            child: InkWell(
+              onTap: () => Future.delayed(Duration.zero, () async {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ArticleInfoScreen(
+                      article: article,
+                    ),
+                  ),
+                );
+              }),
+              child: SizedBox(
+                height: 272,
+                width: MediaQuery.of(context).size.width,
+                child: CachedNetworkImage(
+                  placeholder: (context, url) => Image.asset(
+                      'assets/images/placeholder.png',
+                      fit: BoxFit.fitWidth),
+                  errorWidget: (context, url, error) {
+                    return Image.asset(
+                        'assets/images/placeholder.png',
+                        fit: BoxFit.fitWidth);
+                  },
+                  placeholderFadeInDuration: const Duration(seconds: 1),
+                  fadeInDuration: const Duration(seconds: 1),
+                  fit: BoxFit.fitWidth,
+                  alignment: Alignment.topCenter,
+                  imageUrl: article.multimedia[1].url,
+                ),
+              ),
             ),
           ),
           Container(
@@ -37,33 +61,35 @@ class ArticleListItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
+                        child: Material(
+                            child: InkWell(
+                      onTap: () => Future.delayed(Duration.zero, () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ArticleInfoScreen(
+                              article: article,
+                            ),
+                          ),
+                        );
+                      }),
                       child: Text(
                         article.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                    ),
+                    ))),
                     IconButton(
-                        onPressed: () {}, icon: NewsIcons.favouritesUnselected)
+                      onPressed: () {
+                        // todo add to favourite
+                        Logger.d('add to favourite');
+                      },
+                      icon: NewsIcons.favouritesUnselected,
+                    )
                   ]),
             ),
           ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-                borderRadius: const BorderRadius.all(Radius.circular(16)),
-                onTap: () => Future.delayed(Duration.zero, () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ArticleInfoScreen(
-                            article: article,
-                          ),
-                        ),
-                      );
-                    })),
-          )
         ],
       ),
     );

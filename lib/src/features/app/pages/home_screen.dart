@@ -24,83 +24,84 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-            child: Center(child: BlocBuilder<NavigationBloc, NavigationState>(
-          builder: (context, state) {
-            switch (state.runtimeType) {
-              case NavigationArticlesState:
-                return BlocProvider(
-                  create: (context) => ArticlesBloc(
-                      articlesRepository: diContainer.getArticlesRepository(),
-                      preferencesProvider: diContainer.getLocalStorageRepository()),
-                  child: const ArticlesScreen(),
-                );
-              case NavigationCategoriesState:
-                return Center(
-                  child: Text(state.runtimeType.toString()),
-                );
-              case NavigationFavouritesState:
-                return Center(
-                  child: Text(state.runtimeType.toString()),
-                );
-              case NavigationUserState:
-                return Center(
-                  child: Text(state.runtimeType.toString()),
-                );
-              default:
-                return const Center(
-                  child: Text('Unsupported navigation'),
-                );
-            }
-          },
-        ))),
-        bottomNavigationBar: Container(
-            height: 75,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(24), topLeft: Radius.circular(24)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black38, spreadRadius: 0, blurRadius: 10),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(24),
-                topLeft: Radius.circular(24),
-              ),
-              child: BottomNavigationBar(
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                    icon: NewsIcons.articlesUnselected,
-                    activeIcon: NewsIcons.articlesSelected,
-                    label: 'Articles',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: NewsIcons.categoriesUnselected,
-                    activeIcon: NewsIcons.categoriesSelected,
-                    label: 'Categories',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: NewsIcons.favouritesUnselected,
-                    activeIcon: NewsIcons.favouritesSelected,
-                    label: 'Favourites',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: NewsIcons.userUnselected,
-                    activeIcon: NewsIcons.userSelected,
-                    label: 'User',
-                  ),
+    return BlocProvider(
+      create: (context) => ArticlesBloc(
+          articlesRepository: diContainer.getArticlesRepository(),
+          preferencesProvider: diContainer.getLocalStorageRepository()),
+      child: Scaffold(
+          body: SafeArea(
+              child: Center(child: BlocBuilder<NavigationBloc, NavigationState>(
+            builder: (context, state) {
+              switch (state.runtimeType) {
+                case NavigationArticlesState:
+                  return const ArticlesScreen();
+                case NavigationCategoriesState:
+                  return Center(
+                    child: Text(state.runtimeType.toString()),
+                  );
+                case NavigationFavouritesState:
+                  return Center(
+                    child: Text(state.runtimeType.toString()),
+                  );
+                case NavigationUserState:
+                  return Center(
+                    child: Text(state.runtimeType.toString()),
+                  );
+                default:
+                  return const Center(
+                    child: Text('Unsupported navigation'),
+                  );
+              }
+            },
+          ))),
+          bottomNavigationBar: Container(
+              height: 75,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(24),
+                    topLeft: Radius.circular(24)),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black38, spreadRadius: 0, blurRadius: 10),
                 ],
-                currentIndex: _selectedIndex,
-                onTap: _onBottomNavTapped,
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                elevation: 15,
-                type: BottomNavigationBarType.fixed,
               ),
-            )));
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(24),
+                  topLeft: Radius.circular(24),
+                ),
+                child: BottomNavigationBar(
+                  items: <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: NewsIcons.articlesUnselected,
+                      activeIcon: NewsIcons.articlesSelected,
+                      label: 'Articles',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: NewsIcons.categoriesUnselected,
+                      activeIcon: NewsIcons.categoriesSelected,
+                      label: 'Categories',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: NewsIcons.favouritesUnselected,
+                      activeIcon: NewsIcons.favouritesSelected,
+                      label: 'Favourites',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: NewsIcons.userUnselected,
+                      activeIcon: NewsIcons.userSelected,
+                      label: 'User',
+                    ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  onTap: _onBottomNavTapped,
+                  showSelectedLabels: false,
+                  showUnselectedLabels: false,
+                  elevation: 15,
+                  type: BottomNavigationBarType.fixed,
+                ),
+              ))),
+    );
   }
 
   void _onBottomNavTapped(int index) {
