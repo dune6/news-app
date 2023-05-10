@@ -1,4 +1,8 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:group_button/group_button.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
@@ -9,7 +13,9 @@ import 'package:news_app/src/features/articles/widgets/article_list.dart';
 import 'package:surf_logger/surf_logger.dart';
 
 class ArticlesScreen extends StatefulWidget {
-  const ArticlesScreen({Key? key}) : super(key: key);
+  const ArticlesScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ArticlesScreen> createState() => _ArticlesScreenState();
@@ -19,16 +25,59 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
   final GroupButtonController _groupButtonController =
       GroupButtonController(selectedIndex: 0);
   final TextEditingController _textEditingController = TextEditingController();
+  late StreamSubscription<ConnectivityResult> _subscription;
 
   @override
   void initState() {
-    // todo check internet connection
     super.initState();
+
     _textEditingController.addListener(_filterArticles);
     _groupButtonController.addListener(_changedSection);
-    if (context.read<ArticlesBloc>().articles.isEmpty) {
-      context.read<ArticlesBloc>().add(ArticlesFetched(section: Section.home));
+
+    // watch connection
+    _subscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+
+    // init connection for articles
+    initConnectivity();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await Connectivity().checkConnectivity();
+    } on PlatformException catch (e) {
+      Logger.e('Couldn\'t check connectivity status ', e);
+      return;
     }
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.none:
+        Logger.d('Connection is ${result.name}');
+        context.read<ArticlesBloc>().add(ArticlesLoadLocally());
+        break;
+      default:
+        Logger.d('Connection is ${result.name}');
+        context
+            .read<ArticlesBloc>()
+            .add(ArticlesFetched(selectedCategoriesIndex: 0));
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -39,12 +88,6 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
         const SizedBox(
           height: 72,
         ),
-        ElevatedButton(
-            onPressed: () {
-              // todo delete this button
-              context.read<ArticlesBloc>().add(ArticlesLoadLocally());
-            },
-            child: const Text('load locally data')),
         Column(
           children: [
             Padding(
@@ -95,7 +138,6 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
               height: 24,
             ),
             SingleChildScrollView(
-              primary: false,
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsetsDirectional.only(start: 20, end: 19),
               child: GroupButton(
@@ -104,24 +146,25 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
                 options: GroupButtonOptions(
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                   buttonHeight: 32,
-                  buttonWidth: 81,
+                  textPadding: const EdgeInsets.symmetric(horizontal: 5),
                   selectedTextStyle: Theme.of(context).textTheme.titleSmall,
                   unselectedTextStyle: Theme.of(context).textTheme.displaySmall,
                   selectedColor: NewsColors.purplePrimary,
-                  unselectedColor: NewsColors.greyLighter,
+                  direction: Axis.horizontal,
+                  unselectedColor: NewsColors.greyLight.withOpacity(0.1),
                   groupingType: GroupingType.row,
                   spacing: 16,
                 ),
                 controller: _groupButtonController,
                 enableDeselect: false,
                 buttons: [
-                  // todo send to bloc
-                  Section.home.section,
-                  Section.sports.section,
-                  Section.arts.section,
-                  Section.business.section,
-                  Section.fashion.section,
-                  Section.food.section,
+                  ...context
+                      .read<ArticlesBloc>()
+                      .state
+                      .categories
+                      .map((e) => e.section)
+                      .map((e) => '${e[0].toUpperCase()}${e.substring(1)}')
+                      .toList()
                 ],
               ),
             ),
@@ -159,41 +202,20 @@ class _ArticlesScreenState extends State<ArticlesScreen> {
         .add(FilterArticles(filter: _textEditingController.text));
   }
 
-  void _changedSection() {
+  void _changedSection() async {
     _textEditingController.text = '';
     final index = _groupButtonController.selectedIndexes.last;
-    Logger.d('Index pressed: $index');
-    switch (index) {
-      case 0:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.home));
-        break;
-      case 1:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.sports));
-        break;
-      case 2:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.arts));
-        break;
-      case 3:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.business));
-        break;
-      case 4:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.fashion));
-        break;
-      case 5:
-        context
-            .read<ArticlesBloc>()
-            .add(ArticlesFetched(section: Section.food));
-        break;
+
+    if ((await Connectivity().checkConnectivity()) == ConnectivityResult.none) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Turn on internet'),
+        backgroundColor: Colors.red,
+      ));
+    } else {
+      Logger.d('Index pressed: $index');
+      context
+          .read<ArticlesBloc>()
+          .add(ArticlesFetched(selectedCategoriesIndex: index));
     }
   }
 }

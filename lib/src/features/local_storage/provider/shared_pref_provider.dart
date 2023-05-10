@@ -8,8 +8,13 @@ abstract class ISharedPreferencesProvider {
   Future<void> saveArticles(List<Article> articles);
 
   Future<List<Article>?> getArticles();
+
+  Future<void> saveCategories(List<String> articles);
+
+  Future<List<String>?> getCategories();
 }
 
+/// Repository for communicating service layer [SharedPreferencesService]
 class SharedPreferencesProvider implements ISharedPreferencesProvider {
   final SharedPreferencesService sharedPreferencesService;
 
@@ -29,12 +34,6 @@ class SharedPreferencesProvider implements ISharedPreferencesProvider {
             articlesToSave.addAll(articles.reversed);
             articlesToSave.addAll(downloaded.reversed);
           } else {
-            // saved = 39
-            // loaded = 39
-            // need = 40-loaded = 1
-            // savedResult = saved.sublist(saved - need)
-            // result = savedResult.addAll(savedResult);
-            // result = savedResult.addAll(loaded);
             articlesToSave.addAll(articles.reversed);
             articlesToSave.addAll(downloaded
                 .sublist(downloaded.length - (40 - articles.length))
@@ -73,6 +72,27 @@ class SharedPreferencesProvider implements ISharedPreferencesProvider {
             .map((e) => Article.fromJson(e))
             .toList();
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<String>?> getCategories() async {
+    try {
+      List<String> categories =
+          await sharedPreferencesService.getCategories() ?? [];
+      Logger.d('Categories: $categories');
+      return categories;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> saveCategories(List<String> articles) async {
+    try {
+      await sharedPreferencesService.saveCategories(articles);
     } catch (e) {
       rethrow;
     }

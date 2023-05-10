@@ -3,6 +3,7 @@ import 'package:news_app/src/features/articles/domain/article.dart';
 
 import 'article_list_item.dart';
 
+/// List of preview [Article]`s
 class ArticleListWidget extends StatelessWidget {
   final List<Article> articles;
 

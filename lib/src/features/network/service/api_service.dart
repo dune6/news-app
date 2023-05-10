@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
+import 'package:news_app/src/features/articles/service/repository/articles_repository.dart';
 import 'package:surf_logger/surf_logger.dart';
 import '../utils/http_helper.dart';
 
@@ -9,10 +8,12 @@ abstract class IApiService {
 }
 
 class ApiService {
+  // In a real project , I would use a file .env with link configuration
   static const String _endPoint = 'https://api.nytimes.com/svc/topstories/v2';
   static const String _apiToken = 'vhE2AxgXhNTfcsA9BgAhUFaGTKzwlnOW';
 
-  Future<List<Map<String, dynamic>>> getTList(String section) async {
+  /// Get articles list by [Section] value
+  Future<List<Map<String, dynamic>>> getArticlesList(String section) async {
     var query = {'api-key': _apiToken};
     Response response =
         await HttpHelper.get('$_endPoint/$section.json', queryParams: query);

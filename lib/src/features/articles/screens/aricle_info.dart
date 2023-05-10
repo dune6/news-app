@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
 import 'package:news_app/src/features/articles/domain/article.dart';
 
+/// Screen of full-information about [Article]
 class ArticleInfoScreen extends StatefulWidget {
   final Article article;
 

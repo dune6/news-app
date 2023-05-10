@@ -17,7 +17,7 @@ class ArticlesRepository implements IArticlesRepository {
   Future<List<Article>> getArticles(Section section) async {
     try {
       // test transformation
-      return await apiService.getTList(section.section).then(
+      return await apiService.getArticlesList(section.section).then(
           (List<Map<String, dynamic>> list) =>
               list.map((e) => Article.fromJson(e)).toList());
     } catch (e) {

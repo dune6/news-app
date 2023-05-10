@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:news_app/src/features/app/util/icons.dart';
 import 'package:news_app/src/features/articles/domain/article.dart';
 import 'package:news_app/src/features/articles/screens/aricle_info.dart';
+import 'package:news_app/src/features/norifications/service/notification_service.dart';
 import 'package:surf_logger/surf_logger.dart';
 
+/// Element of [ListView.builder]
 class ArticleListItem extends StatelessWidget {
   final Article article;
 
@@ -37,8 +39,7 @@ class ArticleListItem extends StatelessWidget {
                       'assets/images/placeholder.png',
                       fit: BoxFit.fitWidth),
                   errorWidget: (context, url, error) {
-                    return Image.asset(
-                        'assets/images/placeholder.png',
+                    return Image.asset('assets/images/placeholder.png',
                         fit: BoxFit.fitWidth);
                   },
                   placeholderFadeInDuration: const Duration(seconds: 1),
@@ -62,27 +63,33 @@ class ArticleListItem extends StatelessWidget {
                   children: [
                     Expanded(
                         child: Material(
+                            color: Colors.transparent,
                             child: InkWell(
-                      onTap: () => Future.delayed(Duration.zero, () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ArticleInfoScreen(
-                              article: article,
-                            ),
-                          ),
-                        );
-                      }),
-                      child: Text(
-                        article.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                    ))),
+                              onTap: () =>
+                                  Future.delayed(Duration.zero, () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ArticleInfoScreen(
+                                      article: article,
+                                    ),
+                                  ),
+                                );
+                              }),
+                              child: Text(
+                                article.title == ''
+                                    ? 'Empty title'
+                                    : article.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                            ))),
                     IconButton(
                       onPressed: () {
-                        // todo add to favourite
+                        // сделано для тестирования нотификации
+                        NotificationService()
+                            .showArticleNotification(article: article);
                         Logger.d('add to favourite');
                       },
                       icon: NewsIcons.favouritesUnselected,

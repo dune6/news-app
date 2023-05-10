@@ -27,9 +27,11 @@ dependencies:
   equatable: ^2.0.5
   stream_transform: ^2.1.0
   bloc_concurrency: ^0.2.1
-  connectivity_plus: ^3.0.6
+  connectivity_plus: ^4.0.0
   shared_preferences: ^2.1.1
   cached_network_image: ^3.2.3
+  flutter_local_notifications: ^14.0.0+1
+  rxdart: ^0.27.7
 
 
 

@@ -6,9 +6,9 @@ abstract class ArticlesEvent extends Equatable {
 }
 
 class ArticlesFetched extends ArticlesEvent {
-  final Section section;
+  final int selectedCategoriesIndex;
 
-  ArticlesFetched({required this.section});
+  ArticlesFetched({required this.selectedCategoriesIndex});
 }
 
 class FilterArticles extends ArticlesEvent {
@@ -24,3 +24,11 @@ class ArticlesSaveLocally extends ArticlesEvent {
 }
 
 class ArticlesLoadLocally extends ArticlesEvent {}
+
+class SaveCategories extends ArticlesEvent {
+  final List<String> categories;
+
+  SaveCategories({required this.categories});
+}
+
+class LoadCategories extends ArticlesEvent {}

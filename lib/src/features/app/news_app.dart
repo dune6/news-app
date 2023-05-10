@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/src/features/app/pages/home_screen.dart';
 import 'package:news_app/src/features/app/util/colors.dart';
-import 'package:news_app/src/features/articles/screens/aricle_info.dart';
 import 'package:news_app/src/features/navigation/service/bloc/navigation_bloc.dart';
 
 class NewsApplication extends StatelessWidget {

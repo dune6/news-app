@@ -1,10 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/src/features/app/di/app_di_container.dart';
 import 'package:news_app/src/features/app/util/icons.dart';
+import 'package:news_app/src/features/articles/domain/article.dart';
+import 'package:news_app/src/features/articles/screens/aricle_info.dart';
 import 'package:news_app/src/features/articles/screens/articles.dart';
+import 'package:news_app/src/features/articles/screens/categories.dart';
 import 'package:news_app/src/features/articles/service/articles_bloc/articles_bloc.dart';
 import 'package:news_app/src/features/navigation/service/bloc/navigation_bloc.dart';
+import 'package:news_app/src/features/norifications/service/notification_service.dart';
+import 'package:surf_logger/surf_logger.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,13 +21,27 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  static int _selectedIndex = 0;
+  static int _selectedIndex = 1;
   static AppDiContainer diContainer = AppDiContainer();
+  late final NotificationService notificationService;
 
   @override
   void initState() {
     super.initState();
+    notificationService = NotificationService();
+    listenToNotificationStream();
+    notificationService.initNotification();
   }
+
+  void listenToNotificationStream() =>
+      notificationService.behaviorSubject.listen((payload) {
+        Logger.d('Handle notification payload');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ArticleInfoScreen(
+                    article: Article.fromJson(jsonDecode(payload)))));
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 case NavigationArticlesState:
                   return const ArticlesScreen();
                 case NavigationCategoriesState:
-                  return Center(
-                    child: Text(state.runtimeType.toString()),
-                  );
+                  return const CategoriesScreen();
                 case NavigationFavouritesState:
                   return Center(
                     child: Text(state.runtimeType.toString()),

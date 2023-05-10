@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
+import 'package:news_app/src/features/network/service/api_service.dart';
 
+/// Class utility for [ApiService]
 class HttpHelper {
   static final dio = Dio(BaseOptions(
     responseType: ResponseType.json,
